@@ -3,31 +3,29 @@
 {% block title %}SmartHome Server - Home{% endblock %}
 
 {% block content %}
-    <h2>Welcome to SmartHome Server</h2>
-    <p>This is your central hub for monitoring and controlling your smart home devices.</p>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 2rem;">
-        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; text-align: center;">
-            <h3>📊 Data Monitoring</h3>
-            <p>View real-time and historical data from all your sensors and devices.</p>
-            <a href="/data" style="display: inline-block; background: #e8491d; color: white; padding: 0.5rem 1rem; border-radius: 5px; text-decoration: none; margin-top: 1rem;">View Data</a>
-        </div>
-        
-        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; text-align: center;">
-            <h3>📈 Visualization</h3>
-            <p>See your data come to life with interactive charts and graphs.</p>
-            <a href="/visualization" style="display: inline-block; background: #e8491d; color: white; padding: 0.5rem 1rem; border-radius: 5px; text-decoration: none; margin-top: 1rem;">View Charts</a>
-        </div>
-        
-        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; text-align: center;">
-            <h3>⚙️ Settings</h3>
-            <p>Configure your devices and system preferences.</p>
-            <a href="/settings" style="display: inline-block; background: #e8491d; color: white; padding: 0.5rem 1rem; border-radius: 5px; text-decoration: none; margin-top: 1rem;">Configure</a>
+    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
+        <h3>Temperature Trends</h3>
+        <div style="background: white; padding: 1rem; border-radius: 5px; text-align: center;">
+            <p>Chart will be rendered here using JavaScript libraries</p>
+            <div style="height: 300px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 5px;">
+                <p style="color: #666;">Temperature Chart Placeholder</p>
+            </div>
         </div>
     </div>
     
-    <div style="margin-top: 3rem;">
-        <h3>System Status</h3>
-        <p>Your SmartHome Server is running smoothly. All systems are operational.</p>
+    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
+        <h3>Humidity Trends</h3>
+        <div style="background: white; padding: 1rem; border-radius: 5px; text-align: center;">
+            <p>Chart will be rendered here using JavaScript libraries</p>
+            <div style="height: 300px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 5px;">
+                <p style="color: #666;">Humidity Chart Placeholder</p>
+            </div>
+        </div>
     </div>
+{% endblock %}
+{% block scripts %}
+<script>
+    // This is where you would include charting libraries like Chart.js, D3.js, etc.
+    console.log("Visualization page loaded");
+</script>
 {% endblock %}
