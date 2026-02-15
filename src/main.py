@@ -1,6 +1,7 @@
 import logging
 import asyncio
-
+import uvicorn
+from fastapi import FastAPI, APIRouter
 from src.DatabaseManager import DatabaseManager
 from src.DataHandler import DataHandler
 from src.DataVisualizer import DataVisualizer
@@ -28,17 +29,27 @@ async def main():
 
     logger.info("Instantiating DataVisualizer...")
     
+    app = FastAPI()
+    conf = uvicorn.Config(app, host="localhost", port=8000)
+    server = uvicorn.Server(conf)
+
     dataVisualizer = DataVisualizer()
+    app.include_router(dataVisualizer.router)
         
     logger.info("Instantiated DataVisualizer!")
+    
+
     
 
 
     logger.info("Instantiating DataHandler...")
     
     dataHandler = DataHandler(databaseManager, dataVisualizer)
-    await dataHandler.run("localhost", 8080)
-
+    await asyncio.gather(
+        dataHandler.run("localhost", 8080),
+        server.serve()
+    )
+    
 if __name__ == "__main__":
     asyncio.run(main())
 
