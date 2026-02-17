@@ -21,8 +21,22 @@
     </div-->
 
     <!-- Live Charts -->
-
     {% for group in groups %}
+        <div class="sensor-card" style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
+        
+            <h2>{{group}} Module Voltage</h2>
+            <span id="currentModuleVoltage_{{group}}">-- V</span>
+        </div>
+    {% endfor %}  
+    {% for group in groups %}
+   
+    
+
+
+    
+       
+        
+
         <div>
 
             <h2>{{ group }}</h2>
@@ -32,10 +46,19 @@
                         <canvas id="tempChart_{{group}}"></canvas>
                     </div>
             </div>
-                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
+            
+
+            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
                     <h3>Humidity Trends</h3>
                     <div class="chart-container">
                         <canvas id="humidChart_{{group}}"></canvas>
+                    </div>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
+                    <h3>Module Voltage Trend</h3>
+                    <div class="chart-container">
+                        <canvas id="moduleVoltageChart_{{group}}"></canvas>
                     </div>
             </div>
     

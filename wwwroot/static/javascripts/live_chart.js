@@ -13,7 +13,7 @@ function formatDate(dateString) {
 
 async function updateChart(chart, dataField, sensor_name, data) {
     try {
-        console.info(data)
+        
 
         if (!data || data.length === 0) {
             console.error('No data received');
@@ -51,13 +51,6 @@ async function fetchData() {
             return [];
         }
     }
-async function updateAllCharts(groups){
-     
-        
-
-            
-        }
-    
 
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -68,15 +61,18 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     const ctx_humidity_arr = new Array();
     const ctx_temperature_arr = new Array();
+    const ctx_voltage_arr = new Array();
 
     const tempChart_arr = new Array();
     const humidChart_arr = new Array();
+    const voltageChart_arr = new Array();
 
     for(let i = 0; i < groups.length; i++) {
-
+        
         ctx_temperature_arr[i] = document.getElementById('tempChart_'+groups[i]);
         ctx_humidity_arr[i] = document.getElementById('humidChart_'+groups[i]);
-        
+        ctx_voltage_arr[i] = document.getElementById('moduleVoltageChart_'+groups[i]);
+
         if (!ctx_temperature_arr[i]) {
             console.error('Canvas element for temperature not found');
             return;
@@ -87,7 +83,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             console.error('Canvas element for humidity not found');
             return;
         }
-        console.info("debug stamp");
+
+        if(!ctx_voltage_arr[i]){
+            console.error('Canvas element for voltage not found');
+            return;
+        }
         tempChart_arr[i] = new Chart(ctx_temperature_arr[i], {
         type: 'line',
         data: {
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 datasets: [{
                     label: 'Humidity',
                     data: [],
-                    borderColor: 'rgb(75, 192, 192)',
+                    borderColor: 'rgb(192, 75, 75)',
                     tension: 0.1
                 }]
             },
@@ -133,21 +133,54 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         });
 
+        voltageChart_arr[i] = new Chart(ctx_voltage_arr[i], {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Humidity',
+                    data: [],
+                    borderColor: 'rgb(75, 192, 95)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
     }
 
 
     async function updateAllCharts(){
+
+        const data = await fetchData();
+        const groups = Object.keys(data);
+
+
         for(let i = 0; i < groups.length; i++){
+
+            let moduleVoltage_list = data[groups[i]].map(item => item["ModuleVoltage"]);
+            let moduleVoltage = moduleVoltage_list[moduleVoltage_list.length -1].toFixed(2);
+
+            console.info(Number(moduleVoltage));
+            document.getElementById('currentModuleVoltage_'+groups[i]).textContent = moduleVoltage + " V"
             window.tempChart = tempChart_arr[i];
             window.humidChart = humidChart_arr[i];
-
+            window.voltageChart = voltageChart_arr[i];
             updateChart(window.tempChart, "Temperature", groups[i], data[groups[i]]);
             updateChart(window.humidChart, "Humidity", groups[i], data[groups[i]]);
+            updateChart(window.voltageChart, "ModuleVoltage", groups[i], data[groups[i]]);
 
         }
     }
 
     updateAllCharts();
-    setInterval(updateAllCharts, 5000);
+    setInterval(updateAllCharts, 1000);
 
 });
