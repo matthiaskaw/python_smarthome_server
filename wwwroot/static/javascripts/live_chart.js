@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             data: {
                 labels: [],
                 datasets: [{
-                    label: 'Humidity',
+                    label: 'Module Voltage',
                     data: [],
                     borderColor: 'rgb(75, 192, 95)',
                     tension: 0.1
