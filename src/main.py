@@ -27,7 +27,6 @@ async def main():
     
     database_columns = ["IP_DateTime", "IPAddress", "DateTime", "ClientName","Temperature", "Humidity", "ModuleVoltage"]
     databaseManager = DatabaseManager("sensor_database.db", database_columns)
-    
     logger.info("Instantiated DatabaseManager!")
     
 

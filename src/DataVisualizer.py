@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from interfaces.IDataManager import IDataManager
+from interfaces.IDataService import IDataService
 from interfaces.ILiveData import ILiveData
 from fastapi import FastAPI, APIRouter, Request
 from fastapi.templating import Jinja2Templates
@@ -11,7 +11,7 @@ from fastapi.responses import HTMLResponse
 
 class DataVisualizer():
     
-    def __init__(self, dataManager : IDataManager, database_columns : list):
+    def __init__(self, dataManager : IDataService, database_columns : list):
         
         self._logger = logging.getLogger(__name__)
         self._logger.info("DataVisualizer constructor called...")
@@ -44,8 +44,9 @@ class DataVisualizer():
     
 
     async def _get_data(self):
-        #self._logger.info("_get_data called...")
-        latest_data = self._dataManager.Query_Latest_Data(50)
-        #self._logger.info(latest_data)
+        #Replace hardcoded grouping field with dynamic group field
+        
+        latest_data = self._dataManager.Get_Data_Group_Data_By("ClientName")
+        self._logger.info(latest_data)
         return latest_data
         
