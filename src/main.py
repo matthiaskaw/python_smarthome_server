@@ -12,7 +12,7 @@ from src.DataVisualizer import DataVisualizer
 async def main():
     
 
-    host_name = "localhost"
+    host_name = "0.0.0.0"
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -27,7 +27,6 @@ async def main():
     
     database_columns = ["IP_DateTime", "IPAddress", "DateTime", "ClientName","Temperature", "Humidity", "ModuleVoltage"]
     databaseManager = DatabaseManager("sensor_database.db", database_columns)
-    
     logger.info("Instantiated DatabaseManager!")
     
 
