@@ -21,19 +21,28 @@
     </div-->
 
     <!-- Live Charts -->
-    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
-        <h3>Temperature Trends</h3>
-        <div class="chart-container" style="position: relative; height: 400px; width: 100%">
-            <canvas id="tempChart"></canvas>
-        </div>
-    </div>
+
+    {% for group in groups %}
+        <div>
+
+            <h2>{{ group }}</h2>
+            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
+                <h3>Temperature Trends</h3>
+                    <div class="chart-container" style="position: relative; height: 400px; width: 100%">
+                        <canvas id="tempChart_{{group}}"></canvas>
+                    </div>
+            </div>
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
+                    <h3>Humidity Trends</h3>
+                    <div class="chart-container">
+                        <canvas id="humidChart_{{group}}"></canvas>
+                    </div>
+            </div>
     
-    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
-        <h3>Humidity Trends</h3>
-        <div class="chart-container">
-            <canvas id="humidChart"></canvas>
         </div>
-    </div>
+    {% endfor %}   
+    
+    
 {% endblock %}
 
 {% block scripts %}

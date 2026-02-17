@@ -54,14 +54,19 @@ class DatabaseManager(IDataManager, IDataService):
         for group in unique_groups:
             group = group[0]
             self._logger.info(group)
-            single_group_data = []
+            single_data_in_group = []
             
+            json_data = []    
+
             for row in queried_data:
                 if(row[3] == group):
-                    single_group_data.append(row)
+ 
+                    row_dict = {}
+                    for i, columname in enumerate(self._database_columns):
+                        row_dict[columname] = row[i]
+                    json_data.append(row_dict)
                     
-            grouped_data[group] = single_group_data
-
+                grouped_data[group] = json_data
         return grouped_data    
 
     async def Save_Data(self, data):

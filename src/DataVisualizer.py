@@ -37,16 +37,17 @@ class DataVisualizer():
         self.router.add_api_route("/api/data", self._get_data, methods=["GET"])
         
     async def _root(self, request: Request):
-        
+        latest_data = await self._dataManager.Get_Data_Group_Data_By("ClientName")
+        keys = list(latest_data.keys())
         return self.templates.TemplateResponse("index.html", {
-            "request": request
+            "request": request, "groups" : keys
         })
     
 
     async def _get_data(self):
         #Replace hardcoded grouping field with dynamic group field
         
-        latest_data = self._dataManager.Get_Data_Group_Data_By("ClientName")
-        self._logger.info(latest_data)
+        latest_data = await self._dataManager.Get_Data_Group_Data_By("ClientName")
+        #self._logger.info(latest_data)
         return latest_data
         
