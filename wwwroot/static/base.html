@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SmartHome Server{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header>
+        <h1>SmartHome Server</h1>
+    </header>
+    
+    <!--nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/data">Data</a></li>
+            <li><a href="/visualization">Visualization</a></li>
+            <li><a href="/settings">Settings</a></li>
+        </ul>
+    </nav-->
+    
+    <div class="container">
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 SmartHome Server. All rights reserved.</p>
+    </footer>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,5 @@
+            {% if live_data.timestamp %}
+                    {{ live_data.timestamp }}
+                {% else %}
+                    Never
+                {% endif %}

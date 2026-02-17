@@ -2,12 +2,17 @@ import logging
 import asyncio
 import uvicorn
 from fastapi import FastAPI, APIRouter
+from fastapi.staticfiles import StaticFiles
+
 from src.DatabaseManager import DatabaseManager
 from src.DataHandler import DataHandler
 from src.DataVisualizer import DataVisualizer
 
 
 async def main():
+    
+
+    host_name = "0.0.0.0"
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -20,7 +25,7 @@ async def main():
 
     logger.info("Instantiating DatabaseManager...")
     
-    database_columns = ["IP_DateTime", "IPAddress", "DateTime", "Temperature", "Humidity", "ModuleVoltage"]
+    database_columns = ["IP_DateTime", "IPAddress", "DateTime", "ClientName","Temperature", "Humidity", "ModuleVoltage"]
     databaseManager = DatabaseManager("sensor_database.db", database_columns)
     
     logger.info("Instantiated DatabaseManager!")
@@ -30,12 +35,13 @@ async def main():
     logger.info("Instantiating DataVisualizer...")
     
     app = FastAPI()
-    conf = uvicorn.Config(app, host="localhost", port=8000)
+    conf = uvicorn.Config(app, host=host_name, port=8000)
     server = uvicorn.Server(conf)
 
-    dataVisualizer = DataVisualizer()
+    dataVisualizer = DataVisualizer(databaseManager, database_columns)
     app.include_router(dataVisualizer.router)
-        
+    app.mount("/static/javascripts",StaticFiles(directory="wwwroot/static/javascripts"), name="javascripts")
+    app.mount("/static/css", StaticFiles(directory="wwwroot/static/css"), name="css")
     logger.info("Instantiated DataVisualizer!")
     
 
@@ -44,9 +50,9 @@ async def main():
 
     logger.info("Instantiating DataHandler...")
     
-    dataHandler = DataHandler(databaseManager, dataVisualizer)
+    dataHandler = DataHandler(databaseManager)
     await asyncio.gather(
-        dataHandler.run("localhost", 8080),
+        dataHandler.run(host_name, 8080),
         server.serve()
     )
     

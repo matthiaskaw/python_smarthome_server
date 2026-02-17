@@ -17,9 +17,7 @@ class test_client:
             
             data = {
                 
-                    "IP_DateTime" : f"localhost_{timestamp}",
-                    "IPAddress" : "localhost",
-                    "DateTime" : f"{timestamp}",
+                    "ClientName" : "test_device",
                     "Temperature" : random.uniform(18,25),
                     "Humidity" : random.uniform(40, 50),
                     "ModuleVoltage" : random.uniform(1, 5)

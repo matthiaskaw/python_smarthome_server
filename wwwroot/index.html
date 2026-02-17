@@ -1,0 +1,41 @@
+{% extends "/static/base.html" %}
+
+{% block title %}SmartHome Server - Home{% endblock %}
+
+{% block head %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+{% endblock %}
+
+
+
+{% block content %}
+    <h2>Welcome to SmartHome Server</h2>
+    <p>Real-time monitoring dashboard for your smart home devices.</p>
+
+    <!-- Live Data Section -->
+    <!--div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
+        
+        
+    </div-->
+
+    <!-- Live Charts -->
+    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
+        <h3>Temperature Trends</h3>
+        <div class="chart-container" style="position: relative; height: 400px; width: 100%">
+            <canvas id="tempChart"></canvas>
+        </div>
+    </div>
+    
+    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
+        <h3>Humidity Trends</h3>
+        <div class="chart-container">
+            <canvas id="humidChart"></canvas>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="static/javascripts/live_chart.js"></script>
+{% endblock %}

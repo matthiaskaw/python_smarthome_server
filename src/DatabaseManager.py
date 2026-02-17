@@ -2,7 +2,7 @@ import sqlite3
 import logging
 
 from interfaces.IDataManager import IDataManager
-
+#database_columns = ["IP_DateTime", "IPAddress", "DateTime", "Temperature", "Humidity", "ModuleVoltage"]
 
 class DatabaseManager(IDataManager):
     
@@ -39,8 +39,23 @@ class DatabaseManager(IDataManager):
         self._connection.commit()
         
 
-    def Query_Data(query_string):
-        pass
+    def Query_Latest_Data(self, num_rows) -> list:
+        datetime_columnname = self._database_columns[2]
+        query_string = f"SELECT * FROM (SELECT * FROM {self._table_name} ORDER BY {datetime_columnname} DESC LIMIT {num_rows}) ORDER BY {datetime_columnname} ASC"
+        self._logger.info(query_string)
+        self._cursor.execute(query_string)
+        queried_data = self._cursor.fetchall()
+
+        json_data = []    
+
+        for row in queried_data:
+            row_dict = {}
+            for i, columname in enumerate(self._database_columns):
+                row_dict[columname] = row[i]
+            json_data.append(row_dict)
+             
+        return json_data
+        
 
     # private methods
     

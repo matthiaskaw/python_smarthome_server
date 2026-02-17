@@ -10,5 +10,5 @@ class IDataManager(ABC):
 
 
     @abstractmethod
-    async def Query_Data(query_string : str):
+    async def Query_Latest_Data(num_rows : int):
         pass

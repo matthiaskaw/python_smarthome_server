@@ -4,7 +4,7 @@ import json
 from websockets.asyncio.server import serve
 from interfaces.IDataManager import IDataManager
 from interfaces.ILiveData import ILiveData
-
+from datetime import datetime
 
 
 
@@ -12,12 +12,12 @@ class DataHandler:
 
     # public methods
     
-    def __init__(self, dataManager : IDataManager, liveData : ILiveData):
+    def __init__(self, dataManager : IDataManager):
         
         self._logger = logging.getLogger(__name__)
         self._logger.info("Constructing dataHandler")
         self._dataManager = dataManager
-        self._liveData = liveData
+        
         
 
     async def run(self, host_ip : str, port : int):
@@ -34,10 +34,13 @@ class DataHandler:
         async for message in websocket:
             self._logger.info("Getting data from websocket client...")
             data = json.loads(message)
+            self._logger.info(f"client ip = {websocket.remote_address[0]}")
+            data["IP_DateTime"] = f"{websocket.remote_address[0]}_{datetime.now()}"
+            data["IPAddress"] = f"{websocket.remote_address[0]}"
+            data["DateTime"] = f"{datetime.now()}"
             
             await asyncio.gather(
                 self._dataManager.Save_Data(data),
-                self._liveData.New_Data(data)    
             )       
 
 
