@@ -12,7 +12,7 @@ from src.DataVisualizer import DataVisualizer
 async def main():
     
 
-    host_name = "0.0.0.0"
+    host_name = "localhost"
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'

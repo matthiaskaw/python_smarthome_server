@@ -41,7 +41,7 @@ class DatabaseManager(IDataManager):
 
     def Query_Latest_Data(self, num_rows) -> list:
         datetime_columnname = self._database_columns[2]
-        query_string = f"SELECT * FROM (SELECT * FROM {self._table_name} ORDER BY {datetime_columnname} DESC LIMIT {num_rows}) ORDER BY {datetime_columnname} ASC"
+        query_string = f"SELECT * FROM {self._table_name} WHERE {datetime_columnname} >= datetime('now', '-24 hours') ORDER BY {datetime_columnname} ASC"
         self._logger.info(query_string)
         self._cursor.execute(query_string)
         queried_data = self._cursor.fetchall()
