@@ -1,8 +1,14 @@
 import sqlite3
 import logging
+import csv
+import io
+
+
 from typing import List, Dict, Any
 from interfaces.IDataManager import IDataManager
 from interfaces.IDataService import IDataService
+from datetime import datetime
+
 #database_columns = ["IP_DateTime", "IPAddress", "DateTime", "ClientName","Temperature", "Humidity", "ModuleVoltage"]
 
 class DatabaseManager(IDataManager, IDataService):
@@ -16,6 +22,40 @@ class DatabaseManager(IDataManager, IDataService):
         self._table_name = "sensor_data"
         self._datetime_columnname = self._database_columns[2]
         self._create_table_if_not_existing()
+
+
+    async def Get_CSV_By_Date(self, start_date, end_date):
+
+
+        start = datetime.strptime(start_date + "-01", "%Y-%m-%d")
+        end   = datetime.strptime(end_date + "-01", "%Y-%m-%d")
+
+        # nächster Monatsanfang
+        if end.month == 12:
+            end = end.replace(year=end.year + 1, month=1)
+        else:
+            end = end.replace(month=end.month + 1)
+
+
+        self._cursor.execute(f"SELECT * FROM {self._table_name} WHERE DateTime >= ? AND DateTime < ?", (start, end))
+        
+        data_rows = self._cursor.fetchall()
+        columns = [ description[0] for description in self._cursor.description ]
+        
+        output = io.StringIO()
+        writer = csv.writer(output)
+        
+        writer.writerow(columns)
+        writer.writerows(data_rows)
+        output.seek(0)
+        return output
+        
+    
+        
+
+    
+
+
 
     async def Get_Data_Group_Data_By(self, field) -> List[Dict[str, Any]]:
         

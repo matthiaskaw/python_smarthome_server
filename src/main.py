@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 
 from src.DatabaseManager import DatabaseManager
 from src.DataHandler import DataHandler
-from src.DataVisualizer import DataVisualizer
+from src.UIModel import UIModel
 
 
 async def main():
@@ -37,7 +37,7 @@ async def main():
     conf = uvicorn.Config(app, host=host_name, port=8000)
     server = uvicorn.Server(conf)
 
-    dataVisualizer = DataVisualizer(databaseManager, database_columns)
+    dataVisualizer = UIModel(databaseManager, database_columns)
     app.include_router(dataVisualizer.router)
     app.mount("/static/javascripts",StaticFiles(directory="wwwroot/static/javascripts"), name="javascripts")
     app.mount("/static/css", StaticFiles(directory="wwwroot/static/css"), name="css")
