@@ -1,0 +1,29 @@
+{% extends "/static/base.html" %}
+
+{% block title %}SmartHome Server - Home{% endblock %}
+
+{% block head %}
+{{ super() }}
+
+{% endblock %}
+
+
+
+{% block content %}
+    <h2>Download Sensor Data</h2>
+    <p>Real-time monitoring dashboard for your smart home devices.</p>
+
+    <form method="get" action="/api/timeframe">
+
+        <label>From:</label>
+        <input type="month" name="start_month">
+        <label>To:</label>
+        <input type="month" name="end_month"></input>
+        <button type="submit">Download</button>
+    </form>
+    
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}
