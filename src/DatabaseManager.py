@@ -13,14 +13,14 @@ from datetime import datetime
 
 class DatabaseManager(IDataManager, IDataService):
     
-    def __init__(self, connection_string : str, database_columns : list):
+    def __init__(self, connection_string : str, database_columns : list, table_name : str):
         
         self._connection_string = connection_string
         #self._connection = sqlite3.connect(connection_string)
         #self._cursor = self._connection.cursor()
         self._logger = logging.getLogger(__name__)
         self._database_columns = database_columns    
-        self._table_name = "sensor_data"
+        self._table_name = table_name
         self._datetime_columnname = self._database_columns[2]
         self._create_table_if_not_existing()
 
@@ -68,7 +68,8 @@ class DatabaseManager(IDataManager, IDataService):
 
 
     async def Get_Data_Group_Data_By(self, field) -> List[Dict[str, Any]]:
-        
+        print("Group Data entered")
+
         connection = sqlite3.connect(self._connection_string)
         cursor = connection.cursor()
 
@@ -128,6 +129,7 @@ class DatabaseManager(IDataManager, IDataService):
             
         finally:
             connection.close()  
+            print("Group Data exited")
 
     async def Save_Data(self, data):
         
@@ -162,27 +164,28 @@ class DatabaseManager(IDataManager, IDataService):
         finally:
             connection.close()   
 
-    def Query_Latest_Data(self, num_rows) -> list:
+    async def Query_Latest_Data(self, hours : str):
         #Change function to be more generic / just for querying which can be used for downloading data
-        
         #SQL Query strings limits the amount of data
         connection = sqlite3.connect(self._connection_string)
         cursor = connection.cursor()
         
-        query_string = f"SELECT * FROM {self._table_name} WHERE {self._datetime_columnname} >= datetime('now', '-24 hours') ORDER BY {self._datetime_columnname} ASC"
-        self._logger.info(query_string)
+        query_string = f"SELECT * FROM {self._table_name} ORDER BY {self._datetime_columnname} ASC"
+        
+        #query_string = f"SELECT * FROM {self._table_name} WHERE {self._datetime_columnname} >= datetime('now', '-{hours} hours') ORDER BY {self._datetime_columnname} ASC"
         
         try:
-            cursor.execute(query_string)
-            queried_data = cursor.fetchall()
+            queried_data = cursor.execute(query_string).fetchall()
 
             json_data = []    
-
+            
             for row in queried_data:
                 row_dict = {}
                 for i, columname in enumerate(self._database_columns):
                     row_dict[columname] = row[i]
                 json_data.append(row_dict)
+                
+            return json_data, self._database_columns
                 
         except sqlite3.Error as e:
             self._logger.error(f"Error creating table {self._table_name}: {e}")
@@ -190,6 +193,7 @@ class DatabaseManager(IDataManager, IDataService):
 
         finally:
             connection.close()    
+
 
     # private methods
     

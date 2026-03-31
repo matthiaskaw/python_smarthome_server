@@ -12,6 +12,9 @@ from src.UIModel import UIModel
 async def main():
     
 
+
+    database_name = "sensor_database.db"
+
     host_name = "0.0.0.0"
     logging.basicConfig(
         level=logging.INFO,
@@ -25,10 +28,13 @@ async def main():
 
     logger.info("Instantiating DatabaseManager...")
     
-    database_columns = ["IP_DateTime", "IPAddress", "DateTime", "ClientName","Temperature", "Humidity", "ModuleVoltage"]
-    databaseManager = DatabaseManager("sensor_database.db", database_columns)
-    logger.info("Instantiated DatabaseManager!")
+    database_columns_room_sensors = ["IP_DateTime", "IPAddress", "DateTime", "ClientName","Temperature", "Humidity", "ModuleVoltage"]
+    databaseManager_room_sensors = DatabaseManager(database_name, database_columns_room_sensors, table_name="room_sensors")
+    logger.info("Instantiated DatabaseManager for Room Sensors!")
     
+    database_columns_solar_sensor = ["IP_DateTime", "IPAddress", "DateTime", "ClientName", "Solar_Cell_Voltage", "Voltage_1", "Voltage_2", "Voltage_3", "Voltage_4", "Voltage_5"]
+    databaseManager_solar_sensor = DatabaseManager(database_name, database_columns=database_columns_solar_sensor, table_name="solar_sensor")
+    logger.info("Instantiated DatabaseManager for Solar Sensor!")
 
 
     logger.info("Instantiating DataVisualizer...")
@@ -37,7 +43,11 @@ async def main():
     conf = uvicorn.Config(app, host=host_name, port=8000)
     server = uvicorn.Server(conf)
 
-    dataVisualizer = UIModel(databaseManager, database_columns)
+    dataVisualizer = UIModel(databaseManager_room_sensors,
+                             database_columns_room_sensors,
+                             dataManager_solar_charger=databaseManager_solar_sensor,
+                             database_solar_charger_columns=database_columns_solar_sensor)
+    
     app.include_router(dataVisualizer.router)
     app.mount("/static/javascripts",StaticFiles(directory="wwwroot/static/javascripts"), name="javascripts")
     app.mount("/static/css", StaticFiles(directory="wwwroot/static/css"), name="css")
@@ -49,10 +59,17 @@ async def main():
 
     logger.info("Instantiating DataHandler...")
     
-    dataHandler = DataHandler(databaseManager)
+    dataHandler_room_sensor = DataHandler(databaseManager_room_sensors)
+    dataHandler_solar_sensor = DataHandler(databaseManager_solar_sensor)
     await asyncio.gather(
-        dataHandler.run(host_name, 8080),
-        server.serve()
+        dataHandler_room_sensor.run(host_name, 8080),
+        dataHandler_solar_sensor.run(host_name, 8070),
+        server.serve() 
+    )
+    
+    
+    await asyncio.gather(
+               
     )
     
 if __name__ == "__main__":

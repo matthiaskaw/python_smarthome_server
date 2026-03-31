@@ -9,18 +9,25 @@ from fastapi import FastAPI, APIRouter, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi import Query
-
+import json
 
 
 class UIModel():
     
-    def __init__(self, dataManager : IDataService, database_columns : list):
+    def __init__(self,
+                 dataManager_room_sensors : IDataService,
+                 database_room_sensor_columns : list,
+                 dataManager_solar_charger : IDataService,
+                 database_solar_charger_columns : list):
         
         self._logger = logging.getLogger(__name__)
         self._logger.info("DataVisualizer constructor called...")
         
-        self._dataManager = dataManager
-        self._database_columns = database_columns
+        self._dataManager_room_sensors = dataManager_room_sensors
+        self._database_columns = database_room_sensor_columns
+        
+        self._dataManager_solar_charger = dataManager_solar_charger
+        self._database_solar_charger_columns = database_solar_charger_columns
         
         self.router = APIRouter() 
 
@@ -38,14 +45,16 @@ class UIModel():
         self._logger.info("Setting API endpoints")
         self.router.add_api_route("/", self._root, methods=["GET"])
         self.router.add_api_route("/api/data", self._get_data, methods=["GET"])
+        self.router.add_api_route("/api/solar_charger_data", self._get_solar_charger_data, methods=["GET"])
         self.router.add_api_route("/download", self._download_data, methods=["GET"])
         self.router.add_api_route("/api/timeframe", self._get_timeframed_data, methods=["GET"])
+        self.router.add_api_route("/solar_charger", self._solar_charger, methods=["GET"])
         
 
 
 
     async def _root(self, request: Request):
-        latest_data = await self._dataManager.Get_Data_Group_Data_By("ClientName")
+        latest_data = await self._dataManager_room_sensors.Get_Data_Group_Data_By("ClientName")
         keys = list(latest_data.keys())
         return self.templates.TemplateResponse("index.html", {
             "request": request, "groups" : keys
@@ -61,7 +70,7 @@ class UIModel():
     async def _get_data(self):
         #Replace hardcoded grouping field with dynamic group field
         
-        latest_data = await self._dataManager.Get_Data_Group_Data_By("ClientName")
+        latest_data = await self._dataManager_room_sensors.Get_Data_Group_Data_By("ClientName")
         #self._logger.info(latest_data)
         return latest_data
     
@@ -70,7 +79,7 @@ class UIModel():
             
         try:
 
-           csv_output = await self._dataManager.Get_CSV_By_Date(start_month, end_month)
+           csv_output = await self._dataManager_room_sensors.Get_CSV_By_Date(start_month, end_month)
            self._logger.info(f"Type of csv: {type(csv_output)}")
            return StreamingResponse(
             
@@ -83,3 +92,23 @@ class UIModel():
                 self._logger.error(f"Error: {e}")
                 raise
       
+
+
+    async def _solar_charger(self, request : Request):
+
+        latest_data, columns = await self._dataManager_solar_charger.Query_Latest_Data("1")
+        # print(columns)        
+        voltage_columnname = [columns[-6], columns[-5], columns[-4], columns[-3], columns[-2], columns[-1]]
+        print(voltage_columnname)
+        return self.templates.TemplateResponse("solar_charger.html", {
+            "request": request, "voltage_names" : voltage_columnname})
+
+
+    async def _get_solar_charger_data(self):
+        
+        latest_data, columns = await self._dataManager_solar_charger.Query_Latest_Data("1")
+        # print(columns)        
+        voltage_columns = [columns[-6], columns[-5], columns[-4], columns[-3], columns[-2], columns[-1]]
+
+        #self._logger.info(latest_data)
+        return [latest_data, voltage_columns]

@@ -1,0 +1,48 @@
+{% extends "/static/base.html" %}
+
+{% block title %}SmartHome Server - Home{% endblock %}
+
+{% block head %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+{% endblock %}
+
+
+
+{% block content %}
+    <p>Real-time monitoring of Solar Module</p>
+
+    <!-- Live Data Section -->
+    <!--div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
+        
+        
+    </div-->
+
+    <!-- Live Charts -->
+    {% for key in voltage_names %}
+        <div class="sensor-card" style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
+        
+            <h2>{{key}}</h2>
+            <span id="{{key}}">-- V</span>
+        </div>
+    {% endfor %}  
+    
+    <div>
+
+        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-top: 2rem;">
+            <h3>Voltages</h3>
+                <div class="chart-container" style="position: relative; height: 400px; width: 100%">
+                    <canvas id="voltage_chart"></canvas>
+                </div>
+        </div>
+        
+
+    </div>
+    
+    
+{% endblock %}
+
+{% block scripts %}
+    <script src="static/javascripts/solar_charger_live_chart.js"></script>
+{% endblock %}

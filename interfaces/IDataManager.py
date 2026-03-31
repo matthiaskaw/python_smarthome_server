@@ -12,3 +12,8 @@ class IDataManager(ABC):
     @abstractmethod
     async def Query_Latest_Data(num_rows : int):
         pass
+    
+
+    @abstractmethod
+    async def Query_Latest_Data(hours : str):
+        pass

@@ -103,8 +103,19 @@ document.addEventListener('DOMContentLoaded', async function() {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
+                    x:{
+                        title:{
+                            display: true,
+                            text: 'Day time'
+                        }
+                    },
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                    
+                        title:{
+                            display: true,
+                            text: 'Temperature [°C]'
+                        }
                     }
                 }
             }
@@ -127,7 +138,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                 maintainAspectRatio: false,
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        title:{
+                            display: true,
+                            text: 'Relative Humidity [RH%]'
+                        }
                     }
                 }
             }
@@ -149,7 +164,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                 maintainAspectRatio: false,
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        title:{
+                            display: true,
+                            text: 'Voltage [V]'
+                        }
                     }
                 }
             }
