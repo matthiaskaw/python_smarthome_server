@@ -170,9 +170,9 @@ class DatabaseManager(IDataManager, IDataService):
         connection = sqlite3.connect(self._connection_string)
         cursor = connection.cursor()
         
-        query_string = f"SELECT * FROM {self._table_name} ORDER BY {self._datetime_columnname} ASC"
+        #query_string = f"SELECT * FROM {self._table_name} ORDER BY {self._datetime_columnname} ASC"
         
-        #query_string = f"SELECT * FROM {self._table_name} WHERE {self._datetime_columnname} >= datetime('now', '-{hours} hours') ORDER BY {self._datetime_columnname} ASC"
+        query_string = f"SELECT * FROM {self._table_name} WHERE {self._datetime_columnname} >= datetime('now', '-{hours} hours') ORDER BY {self._datetime_columnname} ASC"
         
         try:
             queried_data = cursor.execute(query_string).fetchall()
