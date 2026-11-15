@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import json
-from websockets.asyncio.server import serve
+from websockets import serve
 from interfaces.IDataManager import IDataManager
 from interfaces.ILiveData import ILiveData
 from datetime import datetime

@@ -11,6 +11,8 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi import Query
 import json
 
+from src.SystemMonitor import SystemMonitor
+
 
 class UIModel():
     
@@ -18,7 +20,8 @@ class UIModel():
                  dataManager_room_sensors : IDataService,
                  database_room_sensor_columns : list,
                  dataManager_solar_charger : IDataService,
-                 database_solar_charger_columns : list):
+                 database_solar_charger_columns : list,
+                 system_monitor: SystemMonitor = None):
         
         self._logger = logging.getLogger(__name__)
         self._logger.info("DataVisualizer constructor called...")
@@ -28,6 +31,9 @@ class UIModel():
         
         self._dataManager_solar_charger = dataManager_solar_charger
         self._database_solar_charger_columns = database_solar_charger_columns
+        
+        # System monitor for CPU, RAM, Temp
+        self._system_monitor = system_monitor or SystemMonitor()
         
         self.router = APIRouter() 
 
@@ -49,6 +55,8 @@ class UIModel():
         self.router.add_api_route("/download", self._download_data, methods=["GET"])
         self.router.add_api_route("/api/timeframe", self._get_timeframed_data, methods=["GET"])
         self.router.add_api_route("/solar_charger", self._solar_charger, methods=["GET"])
+        self.router.add_api_route("/sensors", self._sensors, methods=["GET"])
+        self.router.add_api_route("/api/system/load", self._get_system_load, methods=["GET"])
         
 
 
@@ -56,8 +64,14 @@ class UIModel():
     async def _root(self, request: Request):
         latest_data = await self._dataManager_room_sensors.Get_Data_Group_Data_By("ClientName")
         keys = list(latest_data.keys())
+        
+        # Get system load metrics
+        system_load = await self._system_monitor.get_system_metrics()
+        
         return self.templates.TemplateResponse("index.html", {
-            "request": request, "groups" : keys
+            "request": request, 
+            "groups": keys,
+            "system_load": system_load
         })
     
 
@@ -103,6 +117,13 @@ class UIModel():
         return self.templates.TemplateResponse("solar_charger.html", {
             "request": request, "voltage_names" : voltage_columnname})
 
+    async def _sensors(self, request : Request):
+        latest_data = await self._dataManager_room_sensors.Get_Data_Group_Data_By("ClientName")
+        keys = list(latest_data.keys())
+        return self.templates.TemplateResponse("sensors.html", {
+            "request": request, "groups" : keys
+        })
+
 
     async def _get_solar_charger_data(self):
         
@@ -112,3 +133,9 @@ class UIModel():
 
         #self._logger.info(latest_data)
         return [latest_data, voltage_columns]
+
+    async def _get_system_load(self):
+        """Returns current system load metrics as JSON"""
+        system_load = await self._system_monitor.get_system_metrics()
+        logging.info("UIModel._root ", system_load["cpu_usage"])
+        return system_load#await self._system_monitor.get_system_metrics()

@@ -1,0 +1,314 @@
+/* gauge_opel_astra_g.css - Opel Astra G 2003 Dashboard Style */
+/* Based on: https://www.reddit.com/r/opel/comments/1f5t8n2/my_2002_astra_g_has_this_yellow_light_and_i_cant/ */
+/* Color scheme: White dials, black numbers, red needles, orange backlight */
+
+/* Main container - matches Opel Astra G dashboard color */
+.gauge-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin: 1.5rem 0;
+    background: #000000;
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+
+/* Individual gauge card - circular gauge housing */
+.gauge-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    background: #000000;
+    border-radius: 50%;
+    border: 8px solid #333333;
+    box-shadow: 
+        0 0 0 6px #222222,
+        inset 0 0 20px rgba(255, 150, 50, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.gauge-card:hover {
+    transform: scale(1.02);
+    box-shadow: 
+        0 0 0 6px #444444,
+        inset 0 0 30px rgba(255, 150, 50, 0.2);
+}
+
+/* Gauge title - Opel Astra G style (top center) */
+.gauge-title {
+    position: absolute;
+    top: 8%;
+    width: 100%;
+    text-align: center;
+    color: #ff9600;
+    font-size: 0.8rem;
+    font-family: Arial, sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    z-index: 10;
+    text-shadow: 0 0 5px rgba(255, 150, 50, 0.8);
+}
+
+/* Gauge base */
+.gauge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+/* Gauge dial - Opel Astra G white face */
+.gauge-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #f0f0f0;
+    border: 1px solid #cccccc;
+    box-sizing: border-box;
+}
+
+/* Major tick marks - Opel Astra G style */
+.gauge-major-ticks {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-image: 
+        /* 0% tick */
+        radial-gradient(circle at 100% 0%, transparent 45%, #000 45%, #000 55%, transparent 55%),
+        /* 25% tick */
+        radial-gradient(circle at 75% 25%, transparent 45%, #000 45%, #000 55%, transparent 55%),
+        /* 50% tick */
+        radial-gradient(circle at 50% 50%, transparent 45%, #000 45%, #000 55%, transparent 55%),
+        /* 75% tick */
+        radial-gradient(circle at 25% 75%, transparent 45%, #000 45%, #000 55%, transparent 55%),
+        /* 100% tick */
+        radial-gradient(circle at 0% 100%, transparent 45%, #000 45%, #000 55%, transparent 55%);
+}
+
+/* Minor tick marks */
+.gauge-minor-ticks {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-image: 
+        repeating-conic-gradient(
+            from 0deg at 50% 50%,
+            transparent 0deg,
+            transparent 8deg,
+            #999 8deg,
+            #999 10deg,
+            transparent 10deg,
+            transparent 18deg
+        );
+    clip-path: polygon(50% 0%, 100% 0%, 100% 50%, 50% 50%);
+    opacity: 0.7;
+}
+
+/* Opel Astra G color: Red for all gauges (matches red needles) */
+.gauge-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    clip-path: polygon(50% 0%, 100% 0%, 100% 50%, 50% 50%);
+    transition: background 0.5s ease;
+    background: conic-gradient(
+        #ff0000 0% var(--percentage, 0%),
+        #f0f0f0 var(--percentage, 0%) 180deg
+    );
+}
+
+/* All gauges use the same red color to match Opel Astra G red needles */
+#cpu-gauge,
+#ram-gauge,
+#temp-gauge {
+    background: conic-gradient(
+        #ff0000 0% var(--percentage, 0%),
+        #f0f0f0 var(--percentage, 0%) 180deg
+    );
+}
+
+/* Center of gauge - Opel Astra G style */
+.gauge-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 78%;
+    height: 78%;
+    background: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #000;
+    box-shadow: 
+        inset 0 0 15px rgba(0, 0, 0, 0.1),
+        0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+/* Value display in center - black on white like Opel */
+.gauge-value {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #000000;
+    font-family: Arial, sans-serif;
+}
+
+/* Red line at 80% for warning - Opel style */
+.gauge::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18%;
+    height: 2px;
+    background: #ff0000;
+    transform-origin: left center;
+    transform: rotate(-100deg) translateX(-50%);
+    z-index: 5;
+}
+
+/* Chrome bezel - Opel Astra G silver ring */
+.gauge-bezel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 4px solid #888888;
+    box-shadow: 
+        0 0 15px rgba(255, 255, 255, 0.3),
+        inset 0 0 10px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+}
+
+/* Glass effect overlay with orange tint (Opel backlight) */
+.gauge-glass {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle at 70% 30%,
+        rgba(255, 150, 50, 0.05) 0%,
+        rgba(255, 150, 50, 0.02) 40%,
+        transparent 70%
+    );
+    pointer-events: none;
+}
+
+/* Number labels (0, 25, 50, 75, 100) - black on white like Opel */
+.gauge-number-0,
+.gauge-number-25,
+.gauge-number-50,
+.gauge-number-75,
+.gauge-number-100 {
+    position: absolute;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #000000;
+    font-family: Arial, sans-serif;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+    transform: translate(-50%, -50%);
+}
+
+.gauge-number-0 {
+    top: 85%;
+    left: 15%;
+}
+
+.gauge-number-25 {
+    top: 60%;
+    left: 35%;
+}
+
+.gauge-number-50 {
+    top: 50%;
+    left: 50%;
+    font-size: 0.85rem;
+}
+
+.gauge-number-75 {
+    top: 60%;
+    left: 65%;
+}
+
+.gauge-number-100 {
+    top: 85%;
+    left: 85%;
+}
+
+/* Temperature gauge specific numbers (show °C) */
+.gauge-card:nth-child(3) .gauge-number-0::after,
+.gauge-card:nth-child(3) .gauge-number-25::after,
+.gauge-card:nth-child(3) .gauge-number-50::after,
+.gauge-card:nth-child(3) .gauge-number-75::after,
+.gauge-card:nth-child(3) .gauge-number-100::after {
+    content: "°C";
+    font-size: 0.55rem;
+    margin-left: 2px;
+    color: #666;
+}
+
+/* Warning state styling - Opel orange/red */
+.gauge-card.warning .gauge-title {
+    color: #ff9600;
+    text-shadow: 0 0 8px rgba(255, 150, 50, 0.8);
+}
+
+.gauge-card.danger .gauge-title {
+    color: #ff0000;
+    text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+}
+
+.gauge-card.warning .gauge-fill,
+.gauge-card.danger .gauge-fill {
+    background: conic-gradient(
+        #ff9600 0% var(--percentage, 0%),
+        #f0f0f0 var(--percentage, 0%) 180deg
+    ) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .gauge-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .gauge-value {
+        font-size: 1.8rem;
+    }
+    
+    .gauge-title {
+        font-size: 0.7rem;
+    }
+    
+    .gauge-number-0,
+    .gauge-number-25,
+    .gauge-number-50,
+    .gauge-number-75,
+    .gauge-number-100 {
+        font-size: 0.65rem;
+    }
+}

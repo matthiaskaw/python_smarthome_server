@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from src.DatabaseManager import DatabaseManager
 from src.DataHandler import DataHandler
 from src.UIModel import UIModel
+from src.SystemMonitor import SystemMonitor
 
 
 async def main():
@@ -43,10 +44,13 @@ async def main():
     conf = uvicorn.Config(app, host=host_name, port=8000)
     server = uvicorn.Server(conf)
 
+    system_monitor = SystemMonitor()
+    
     dataVisualizer = UIModel(databaseManager_room_sensors,
                              database_columns_room_sensors,
                              dataManager_solar_charger=databaseManager_solar_sensor,
-                             database_solar_charger_columns=database_columns_solar_sensor)
+                             database_solar_charger_columns=database_columns_solar_sensor,
+                             system_monitor=system_monitor)
     
     app.include_router(dataVisualizer.router)
     app.mount("/static/javascripts",StaticFiles(directory="wwwroot/static/javascripts"), name="javascripts")

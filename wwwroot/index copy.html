@@ -1,0 +1,148 @@
+{% extends "/static/base.html" %}
+
+{% block title %}SmartHome Server - Home{% endblock %}
+
+{% block head %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<link rel="stylesheet" href="/static/css/gauge_needle.css">
+{% endblock %}
+
+{% block content %}
+    <h2>Welcome to SmartHome Server</h2>
+
+    <h3>System Status</h3>
+    <div class="gauge-container">
+        <div class="gauge-card">
+            <div class="gauge-title">CPU Usage</div>
+            <div class="gauge-dial"></div>
+            <div class="gauge-major-ticks"></div>
+            <div class="gauge-minor-ticks"></div>
+            <div class="gauge-needle-base"></div>
+            <div class="gauge-needle" id="cpu-needle" style="--percentage: 0;"></div>
+            <div class="gauge-warning-line"></div>
+            <div class="gauge-number gauge-number-0">0</div>
+            <div class="gauge-number gauge-number-25">25</div>
+            <div class="gauge-number gauge-number-50">50</div>
+            <div class="gauge-number gauge-number-75">75</div>
+            <div class="gauge-number gauge-number-100">100</div>
+            <div class="gauge-bezel"></div>
+            <div class="gauge-glass"></div>
+            <div class="gauge-center">
+                <span class="gauge-value" id="cpu-value">0%</span>
+            </div>
+        </div>
+
+        <div class="gauge-card">
+            <div class="gauge-title">RAM Usage</div>
+            <div class="gauge-dial"></div>
+            <div class="gauge-major-ticks"></div>
+            <div class="gauge-minor-ticks"></div>
+            <div class="gauge-needle-base"></div>
+            <div class="gauge-needle" id="ram-needle" style="--percentage: 0;"></div>
+            <div class="gauge-warning-line"></div>
+            <div class="gauge-number gauge-number-0">0</div>
+            <div class="gauge-number gauge-number-25">25</div>
+            <div class="gauge-number gauge-number-50">50</div>
+            <div class="gauge-number gauge-number-75">75</div>
+            <div class="gauge-number gauge-number-100">100</div>
+            <div class="gauge-bezel"></div>
+            <div class="gauge-glass"></div>
+            <div class="gauge-center">
+                <span class="gauge-value" id="ram-value">0%</span>
+            </div>
+        </div>
+
+        <div class="gauge-card">
+            <div class="gauge-title">CPU Temperature</div>
+            <div class="gauge-dial"></div>
+            <div class="gauge-major-ticks"></div>
+            <div class="gauge-minor-ticks"></div>
+            <div class="gauge-needle-base"></div>
+            <div class="gauge-needle" id="temp-needle" style="--percentage: 0;"></div>
+            <div class="gauge-warning-line"></div>
+            <div class="gauge-number gauge-number-0">0</div>
+            <div class="gauge-number gauge-number-25">20</div>
+            <div class="gauge-number gauge-number-50">40</div>
+            <div class="gauge-number gauge-number-75">60</div>
+            <div class="gauge-number gauge-number-100">80</div>
+            <div class="gauge-bezel"></div>
+            <div class="gauge-glass"></div>
+            <div class="gauge-center">
+                <span class="gauge-value" id="temp-value">--°C</span>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 2rem;">
+        <p>Sensor Data Groups: {{ groups|join(', ') if groups else 'No data yet' }}</p>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="/static/javascripts/system_load.js"></script>
+<script>
+    // Initialize with server-side rendered data if available
+    const initialData = {{ system_load|tojson if system_load else {} }};
+    if (initialData.cpu_usage) {
+        updateGauge('cpu', initialData.cpu_usage);
+        updateWarningState('cpu', initialData.cpu_usage);
+    }
+    if (initialData.ram_usage) {
+        updateGauge('ram', initialData.ram_usage);
+        updateWarningState('ram', initialData.ram_usage);
+    }
+    if (initialData.cpu_temp) {
+        updateTempGauge(initialData.cpu_temp);
+        updateWarningState('temp', initialData.cpu_temp, true);
+    }
+
+    function updateGauge(type, value) {
+        const needle = document.getElementById(`${type}-needle`);
+        const valueEl = document.getElementById(`${type}-value`);
+        if (needle && valueEl) {
+            needle.style.setProperty('--percentage', value);
+            valueEl.textContent = `${value.toFixed(1)}%`;
+        }
+    }
+
+    function updateTempGauge(temp) {
+        const needle = document.getElementById('temp-needle');
+        const valueEl = document.getElementById('temp-value');
+        if (needle && valueEl) {
+            // Temperature gauge: 0-80°C scale (cap at 80 for safety display)
+            const percent = Math.min(temp, 80);
+            needle.style.setProperty('--percentage', percent);
+            valueEl.textContent = `${temp.toFixed(1)}°C`;
+        }
+    }
+
+    function updateWarningState(type, value, isTemp = false) {
+        const cards = document.querySelectorAll('.gauge-card');
+        let card = null;
+        
+        if (type === 'cpu' && cards.length > 0) card = cards[0];
+        else if (type === 'ram' && cards.length > 1) card = cards[1];
+        else if (type === 'temp' && cards.length > 2) card = cards[2];
+        
+        if (!card) return;
+
+        card.classList.remove('warning', 'danger');
+
+        if (isTemp) {
+            if (value > 70) {
+                card.classList.add('danger');
+            } else if (value > 55) {
+                card.classList.add('warning');
+            }
+        } else {
+            if (value > 80) {
+                card.classList.add('danger');
+            } else if (value > 60) {
+                card.classList.add('warning');
+            }
+        }
+    }
+</script>
+{% endblock %}

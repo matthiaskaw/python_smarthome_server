@@ -1,0 +1,275 @@
+/* gauge_needle.css - Center Pivot Needle Gauges */
+
+/* Main container */
+.gauge-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin: 1.5rem 0;
+    background: #000000;
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+
+/* Individual gauge card */
+.gauge-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #000000;
+    border: 4px solid #333333;
+    box-shadow: 0 0 0 6px #222222, inset 0 0 20px rgba(255, 150, 50, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.gauge-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 6px #444444, inset 0 0 30px rgba(255, 150, 50, 0.2);
+}
+
+/* Gauge title */
+.gauge-title {
+    position: absolute;
+    top: 70%;
+    width: 100%;
+    text-align: center;
+    color: #ff9900;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    z-index: 10;
+    /*text-shadow: 0 0 5px rgba(255, 150, 50, 0.8);*/
+}
+
+/* Gauge dial - white face */
+.gauge-dial {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #000000;
+    border: 1px solid #000000;
+    z-index: 1;
+}
+
+/* Minor tick marks */
+.gauge-minor-ticks {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-image: repeating-conic-gradient(
+        from -90deg at 50% 50%,
+        transparent 0deg, transparent 8deg, #888 8deg, #888 10deg, transparent 10deg, transparent 18deg
+    );
+    clip-path: polygon(50% 0%, 100% 0%, 100% 50%, 50% 50%);
+    opacity: 0.7;
+    z-index: 2;
+}
+
+.gauge-major-ticks{
+    position: absolute;
+    
+    top: 50%;
+    left: 50%;
+    width: 48%;
+    height: 4px;
+    transform-origin: left center;
+    background: linear-gradient(to right, #ff9900, #ff9900);
+    z-index: 2;
+}
+
+.gauge-major-tick-0{
+    
+    transform: rotate(180deg);
+}
+
+.gauge-major-tick-25{
+    
+    transform: rotate(225deg);
+}
+
+.gauge-major-tick-50{
+    
+    transform: rotate(270deg);
+}
+
+.gauge-major-tick-75{
+    
+    transform: rotate(315deg);
+}
+
+.gauge-major-tick-100{
+    
+    transform: rotate(0deg);
+}
+
+/* Center pin - fixed point */
+.gauge-needle-base {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    background: #000;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 11;
+    border: 4px solid #666;
+}
+
+/* Needle - rotates around center pin */
+.gauge-needle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 48%;
+    height: 4px;
+    background: linear-gradient(to right, #cc0000, #ff0000);
+    transform: translateX(-50%) rotate(-90deg);
+    transform-origin: left center;
+    z-index: 10;
+    border-radius: 2px 2px 0 0;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+
+
+/* Needle tip */
+
+/* Number labels */
+.gauge-number {
+    position: absolute;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ff9600;
+    font-family: Arial, sans-serif;
+    transform: translate(-50%, -50%);
+    z-index: 15;
+}
+
+.gauge-number-0   { top: 50%; left: 13%;    }
+.gauge-number-25  { top: 23.84%; left: 23.84%; }
+.gauge-number-50  { top: 13%; left: 50%; }
+.gauge-number-75  { top: 23.84%; left: 76.16%; }
+.gauge-number-100 { top: 50%; left: 85%; }
+
+/* Temperature gauge numbers */
+.gauge-card:nth-child(3) .gauge-number-0 { content: "0"; }
+.gauge-card:nth-child(3) .gauge-number-25 { content: "20"; }
+.gauge-card:nth-child(3) .gauge-number-50 { content: "40"; }
+.gauge-card:nth-child(3) .gauge-number-75 { content: "60"; }
+.gauge-card:nth-child(3) .gauge-number-100 { content: "80"; }
+
+.gauge-card:nth-child(3) .gauge-number::after {
+    content: "°C";
+    font-size: 0.55rem;
+    margin-left: 2px;
+    color: #666;
+}
+
+/* Warning line at 80% */
+.gauge-warning-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 15%;
+    height: 3px;
+    background: #ff0000;
+    transform-origin: left center;
+    transform: rotate(-100deg) translateX(-50%);
+    z-index: 5;
+}
+
+/* Center with value */
+.gauge-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 82%;
+    height: 82%;
+    background: #000000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #ff9900;
+    z-index: 8;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.gauge-value {
+    position:   absolute;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #ff9900;
+    font-family: Arial, sans-serif;
+
+    z-index: 13;
+}
+
+/* Chrome bezel */
+.gauge-bezel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 4px solid #888888;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3), inset 0 0 10px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+}
+
+/* Glass effect */
+.gauge-glass {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 70% 30%, rgba(255, 150, 50, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* Needle animation */
+@keyframes needleMove {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(calc(180deg + (var(--percentage) * 1.8deg))); }
+}
+
+.gauge-needle {
+    animation: needleMove 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Warning states */
+.gauge-card.warning .gauge-title {
+    color: #ff9600;
+    text-shadow: 0 0 8px rgba(255, 150, 50, 0.8);
+}
+
+.gauge-card.danger .gauge-title {
+    color: #ff0000;
+    text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .gauge-container { grid-template-columns: 1fr; gap: 1.5rem; }
+    .gauge-value { font-size: 1.8rem; }
+    .gauge-title { font-size: 0.7rem; }
+    .gauge-number { font-size: 0.65rem; }
+    .gauge-needle { width: 45%; }
+}
